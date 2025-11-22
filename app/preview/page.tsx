@@ -9,14 +9,6 @@ function PreviewContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Cleanup blob URL on unmount
-  useEffect(() => {
-    return () => {
-      if (previewUrl && previewUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
 
   useEffect(() => {
     const name = searchParams.get('name');
@@ -28,42 +20,11 @@ function PreviewContent() {
       return;
     }
 
-    const generatePreview = async () => {
-      try {
-        const response = await fetch('/api/certificate/preview', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ name, distance }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to generate preview');
-        }
-
-        const data = await response.json();
-        
-        // Convert base64 to blob and create blob URL for better browser compatibility
-        const byteCharacters = atob(data.pdfBase64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: 'application/pdf' });
-        const blobUrl = URL.createObjectURL(blob);
-        
-        setPreviewUrl(blobUrl);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    generatePreview();
+    // Use GET endpoint directly - more reliable in production
+    // This avoids blob URLs and client-side processing
+    const previewUrl = `/api/certificate/preview?name=${encodeURIComponent(name)}&distance=${encodeURIComponent(distance)}`;
+    setPreviewUrl(previewUrl);
+    setLoading(false);
   }, [searchParams]);
 
   if (loading) {
