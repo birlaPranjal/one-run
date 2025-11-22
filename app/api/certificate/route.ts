@@ -74,7 +74,8 @@ export async function POST(request: NextRequest) {
     
     // Calculate scaled coordinates
     // X coordinate scales horizontally
-    const nameX = 2528 * scaleX - (10 * scaleX);
+    // move right 10px (add to X)
+    const nameX = 2528 * scaleX + (30 * scaleX);
     // Y coordinate: in PDF, Y is from bottom, so we need to invert
     // Move down by subtracting 80 pixels (scaled) + 1px down + 2px more down
     const nameY = pdfHeight - (1891 * scaleY) - (80 * scaleY) - (1 * scaleY) - (2 * scaleY) - (5 * scaleY);
@@ -92,7 +93,7 @@ export async function POST(request: NextRequest) {
     // Move down by subtracting 80 pixels (scaled) - 2px up - 5px more up (add instead of subtract)
     // Move 90px left (subtract from X)
     const distanceText = distance.toUpperCase();
-    const distanceX = (3318 * scaleX) - (90 * scaleX);
+    const distanceX = (3318 * scaleX) - (65 * scaleX);
     const distanceY = pdfHeight - (2186 * scaleY) - (83 * scaleY) + (2 * scaleY) + (5 * scaleY);
     
     page.drawText(distanceText, {

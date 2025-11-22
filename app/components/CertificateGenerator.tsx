@@ -9,6 +9,15 @@ export default function CertificateGenerator() {
   const [previewLoading, setPreviewLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Function to capitalize first letter of each word
+  const capitalizeName = (text: string): string => {
+    return text
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   const handlePreview = () => {
     if (!name || !distance) {
       setError('Please fill in both name and distance fields');
@@ -16,9 +25,19 @@ export default function CertificateGenerator() {
     }
 
     setError('');
+    setPreviewLoading(true);
+    
+    // Capitalize the name before opening preview
+    const capitalizedName = capitalizeName(name);
+    const previewUrl = `/preview?name=${encodeURIComponent(capitalizedName)}&distance=${encodeURIComponent(distance)}`;
+    
     // Open preview in new tab
-    const previewUrl = `/preview?name=${encodeURIComponent(name)}&distance=${encodeURIComponent(distance)}`;
-    window.open(previewUrl, '_blank');
+    const newWindow = window.open(previewUrl, '_blank');
+    
+    // Reset loading state after a short delay
+    setTimeout(() => {
+      setPreviewLoading(false);
+    }, 1000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,12 +46,15 @@ export default function CertificateGenerator() {
     setError('');
 
     try {
+      // Capitalize the name before sending
+      const capitalizedName = capitalizeName(name);
+      
       const response = await fetch('/api/certificate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, distance }),
+        body: JSON.stringify({ name: capitalizedName, distance }),
       });
 
       if (!response.ok) {
@@ -44,10 +66,11 @@ export default function CertificateGenerator() {
       const blob = await response.blob();
       
       // Create a download link
+      const downloadName = capitalizeName(name);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `certificate-${name.replace(/\s+/g, '-')}.pdf`;
+      a.download = `certificate-${downloadName.replace(/\s+/g, '-')}.pdf`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -115,22 +138,47 @@ export default function CertificateGenerator() {
           </div>
         )}
 
+        {(loading || previewLoading) && (
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center gap-3">
+              <div className="inline-block animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-600"></div>
+              <p className="text-blue-700 font-medium">
+                {loading ? 'Generating your certificate...' : 'Opening preview...'}
+              </p>
+            </div>
+          </div>
+        )}
+
         <div className="flex gap-4">
           <button
             type="button"
             onClick={handlePreview}
-            disabled={!name || !distance}
-            className="flex-1 py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            disabled={!name || !distance || previewLoading || loading}
+            className="flex-1 py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
-            Preview Certificate
+            {previewLoading ? (
+              <>
+                <div className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                <span>Opening Preview...</span>
+              </>
+            ) : (
+              'Preview Certificate'
+            )}
           </button>
           
           <button
             type="submit"
-            disabled={loading}
-            className="flex-1 py-3 px-6 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            disabled={loading || previewLoading}
+            className="flex-1 py-3 px-6 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
           >
-            {loading ? 'Generating...' : 'Download PDF'}
+            {loading ? (
+              <>
+                <div className="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+                <span>Generating...</span>
+              </>
+            ) : (
+              'Download PDF'
+            )}
           </button>
         </div>
       </form>

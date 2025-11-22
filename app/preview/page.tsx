@@ -69,9 +69,13 @@ function PreviewContent() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-600 mb-4"></div>
-          <p className="text-gray-700 text-lg">Generating certificate preview...</p>
+        <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
+          <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-orange-600 border-t-transparent mb-6"></div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Generating Certificate</h2>
+          <p className="text-gray-600">Please wait while we create your certificate preview...</p>
+          <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+            <div className="bg-orange-600 h-2 rounded-full animate-pulse" style={{ width: '60%' }}></div>
+          </div>
         </div>
       </div>
     );
