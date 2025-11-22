@@ -9,6 +9,15 @@ function PreviewContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Cleanup blob URL on unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrl && previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   useEffect(() => {
     const name = searchParams.get('name');
     const distance = searchParams.get('distance');
@@ -35,7 +44,18 @@ function PreviewContent() {
         }
 
         const data = await response.json();
-        setPreviewUrl(data.previewUrl);
+        
+        // Convert base64 to blob and create blob URL for better browser compatibility
+        const byteCharacters = atob(data.pdfBase64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'application/pdf' });
+        const blobUrl = URL.createObjectURL(blob);
+        
+        setPreviewUrl(blobUrl);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {

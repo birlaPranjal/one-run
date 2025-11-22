@@ -49,33 +49,39 @@ export async function POST(request: NextRequest) {
     const scaleX = pdfWidth / originalWidth;
     const scaleY = pdfHeight / originalHeight;
     
-    const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const nameFontSize = 120; // Increased font size for name
-    const distanceFontSize = 120; // Increased font size for distance
+    // Use cursive/italic font for name (HelveticaOblique - italic style, lighter than bold)
+    const nameFont = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+    // Keep bold font for distance
+    const distanceFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const nameFontSize = 200; // Increased font size for name
+    const distanceFontSize = 90; // Increased font size for distance
     
     // Calculate scaled coordinates for name
-    const nameX = 2528 * scaleX;
-    const nameY = pdfHeight - (1891 * scaleY);
+    const nameX = 2528 * scaleX - (10 * scaleX);
+    // Move down by subtracting 80 pixels (scaled) + 1px down + 2px more down
+    const nameY = pdfHeight - (1891 * scaleY) - (80 * scaleY) - (1 * scaleY) - (2 * scaleY) - (5 * scaleY);
     
-    // Draw name
+    // Draw name with cursive/italic font
     page.drawText(name, {
       x: nameX,
       y: nameY,
       size: nameFontSize,
-      font: font,
+      font: nameFont,
       color: rgb(0, 0, 0),
     });
 
     // Add distance text at coordinates: 3308, 2186
+    // Move down by subtracting 80 pixels (scaled) - 2px up - 5px more up (add instead of subtract)
+    // Move 15px left (subtract from X)
     const distanceText = distance.toUpperCase();
-    const distanceX = 3308 * scaleX;
-    const distanceY = pdfHeight - (2186 * scaleY);
+    const distanceX = (3308 * scaleX) - (70 * scaleX);
+    const distanceY = pdfHeight - (2186 * scaleY) - (80 * scaleY) + (2 * scaleY) + (5 * scaleY);
     
     page.drawText(distanceText, {
       x: distanceX,
       y: distanceY,
       size: distanceFontSize,
-      font: font,
+      font: distanceFont,
       color: rgb(0, 0, 0),
     });
 

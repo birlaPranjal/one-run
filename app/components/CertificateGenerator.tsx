@@ -64,7 +64,7 @@ export default function CertificateGenerator() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg">
+    <div className="w-full max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg text-black">
       <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
         Certificate Generator
       </h1>
@@ -83,7 +83,7 @@ export default function CertificateGenerator() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all text-black"
             placeholder="Enter participant name"
           />
         </div>
@@ -93,17 +93,20 @@ export default function CertificateGenerator() {
             htmlFor="distance" 
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            Distance (e.g., 5K, 10K, 21K)
+            Distance
           </label>
-          <input
-            type="text"
+          <select
             id="distance"
             value={distance}
             onChange={(e) => setDistance(e.target.value)}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all"
-            placeholder="Enter distance (e.g., 5K, 10K)"
-          />
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all bg-white"
+          >
+            <option value="">Select distance</option>
+            <option value="3 KM">3 KM</option>
+            <option value="5 KM">5 KM</option>
+            <option value="7 KM">7 KM</option>
+          </select>
         </div>
 
         {error && (
