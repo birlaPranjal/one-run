@@ -89,6 +89,8 @@ export async function POST(request: NextRequest) {
       color: rgb(0, 0, 0),
     });
 
+    
+
     // Add distance text at coordinates: 3308, 2186
     // Move down by subtracting 80 pixels (scaled) - 2px up - 5px more up (add instead of subtract)
     // Move 90px left (subtract from X)
