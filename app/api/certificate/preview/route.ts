@@ -84,12 +84,20 @@ async function generateCertificatePDF(name: string, distance: string) {
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const name = searchParams.get('name');
-    const distance = searchParams.get('distance');
+    const name = searchParams.get('name')?.trim();
+    const distance = searchParams.get('distance')?.trim();
 
     if (!name || !distance) {
       return NextResponse.json(
         { error: 'Name and distance are required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate name length
+    if (name.length > 100) {
+      return NextResponse.json(
+        { error: 'Name must be less than 100 characters' },
         { status: 400 }
       );
     }
