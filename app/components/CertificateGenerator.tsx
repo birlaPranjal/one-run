@@ -88,9 +88,17 @@ export default function CertificateGenerator() {
 
   return (
     <div className="w-full max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-lg text-black">
-      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
-        Certificate Generator
-      </h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">
+          Certificate Generator
+        </h1>
+        <a
+          href="/admin"
+          className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+        >
+          Admin Panel
+        </a>
+      </div>
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
