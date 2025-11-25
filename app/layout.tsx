@@ -15,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Marathon Certificate Generator",
-  description: "Generate certificates for One Indore Run participants",
+  description: "Generate certificates for One Indore Run participants. Create personalized PDF certificates with participant names and distances. Includes admin panel for managing entries.",
+  keywords: ["marathon", "certificate", "generator", "PDF", "One Indore Run"],
 };
 
 export default function RootLayout({
