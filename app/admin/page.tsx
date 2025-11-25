@@ -15,6 +15,7 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [totalFromAPI, setTotalFromAPI] = useState<number | null>(null);
 
   useEffect(() => {
     fetchEntries();
@@ -32,6 +33,7 @@ export default function AdminPanel() {
       
       const data = await response.json();
       setEntries(data.entries || []);
+      setTotalFromAPI(data.total ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
