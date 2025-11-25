@@ -40,11 +40,23 @@ export async function GET(request: NextRequest) {
       ])
       .toArray();
 
-    return NextResponse.json({ entries: uniqueEntries }, { status: 200 });
+    return NextResponse.json(
+      { entries: uniqueEntries, total: uniqueEntries.length },
+      {
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      }
+    );
   } catch (error) {
     console.error('Error fetching admin entries:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to fetch entries' },
+      {
+        error: 'Failed to fetch entries',
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
+      },
       { status: 500 }
     );
   }
