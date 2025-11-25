@@ -8,6 +8,10 @@ A Next.js application for generating certificates for the One Indore Run maratho
 - 🎨 Custom PDF generation with text overlay on certificate template
 - 💾 MongoDB integration for storing certificate data
 - 📥 Automatic PDF download
+- 👁️ Certificate preview before download
+- 🔍 Admin panel to view all unique entries
+- 📊 CSV export functionality for data analysis
+- 🔄 Duplicate detection and management
 
 ## Getting Started
 
@@ -51,16 +55,33 @@ npm run dev
 
 ## Usage
 
+### Generating Certificates
+
 1. Enter the participant's name in the "Participant Name" field
-2. Enter the distance (e.g., "5K", "10K", "21K") in the "Distance" field
-3. Click "Generate & Download Certificate"
-4. The certificate will be saved to MongoDB and a PDF will be automatically downloaded
+2. Select the distance from the dropdown (3 KM, 5 KM, or 7 KM)
+3. Click "Preview Certificate" to see a preview before generating
+4. Click "Download PDF" to generate and download the certificate
+5. The certificate will be saved to MongoDB and a PDF will be automatically downloaded
+
+### Admin Panel
+
+Access the admin panel at [http://localhost:3000/admin](http://localhost:3000/admin) to:
+
+- View all unique certificate entries (duplicates are automatically filtered)
+- Search entries by name or distance
+- See statistics: unique entries, total certificates, and duplicates removed
+- Export data to CSV for analysis
+- View duplicate counts for each entry
 
 ## Project Structure
 
 - `app/page.tsx` - Main page with certificate generator form
 - `app/components/CertificateGenerator.tsx` - Certificate generator form component
+- `app/admin/page.tsx` - Admin panel for viewing and managing entries
+- `app/preview/page.tsx` - Certificate preview page
 - `app/api/certificate/route.ts` - API route for certificate generation and MongoDB storage
+- `app/api/certificate/preview/route.ts` - API route for certificate preview
+- `app/api/certificate/admin/route.ts` - API route for admin panel data
 - `lib/mongodb.ts` - MongoDB connection utility
 - `public/Certificate.jpg` - Certificate template image
 

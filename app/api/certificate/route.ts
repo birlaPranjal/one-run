@@ -31,6 +31,15 @@ export async function POST(request: NextRequest) {
 
     // Generate PDF
     const certificatePath = path.join(process.cwd(), 'public', 'Certificate.jpg');
+    
+    if (!fs.existsSync(certificatePath)) {
+      console.error('Certificate template not found at:', certificatePath);
+      return NextResponse.json(
+        { error: 'Certificate template not found' },
+        { status: 500 }
+      );
+    }
+    
     const certificateImage = fs.readFileSync(certificatePath);
 
     // Get actual image dimensions using sharp
@@ -89,8 +98,6 @@ export async function POST(request: NextRequest) {
       color: rgb(0, 0, 0),
     });
 
-    
-
     // Add distance text at coordinates: 3308, 2186
     // Move down by subtracting 80 pixels (scaled) - 2px up - 5px more up (add instead of subtract)
     // Move 90px left (subtract from X)
@@ -119,8 +126,12 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error generating certificate:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to generate certificate' },
+      { 
+        error: 'Failed to generate certificate',
+        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+      },
       { status: 500 }
     );
   }
